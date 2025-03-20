@@ -1,4 +1,4 @@
-import {Route, createBrowserRouter, createRoutesFromElements, RouterProvider} from "react-router-dom"
+import {Route, createBrowserRouter, createRoutesFromElements, RouterProvider, HashRouter, Routes} from "react-router-dom"
 
 import MainLayout from "./layouts/MainLayout"
 import HomePage from "./pages/HomePage"
@@ -43,23 +43,40 @@ const App = () => {
     
 
   
-  const router =createBrowserRouter(
-    createRoutesFromElements(
-      <Route path="/" element={<MainLayout />} >
-        <Route index element={<HomePage />} />
-        <Route path="/shop" element={<ShopPage />} />
-        <Route path="/shop/:id" element={<ProductPage />} loader={productLoader} />
-        <Route path="/add-product" element={<AddProductPage addProductSubmit={ addProduct } />}></Route>
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/auth" element={<AuthPage />} />
-        <Route path="/terms-and-conditions" element={<TASPage />} />
-      </Route>
-    )
-  )
+  // const router =createBrowserRouter(
+  //   createRoutesFromElements(
+  //     <Route path="/" element={<MainLayout />} >
+  //       <Route index element={<HomePage />} />
+  //       <Route path="/shop" element={<ShopPage />} />
+  //       <Route path="/shop/:id" element={<ProductPage />} loader={productLoader} />
+  //       <Route path="/add-product" element={<AddProductPage addProductSubmit={ addProduct } />}></Route>
+  //       <Route path="/cart" element={<CartPage />} />
+  //       <Route path="/about" element={<AboutPage />} />
+  //       <Route path="/contact" element={<ContactPage />} />
+  //       <Route path="/auth" element={<AuthPage />} />
+  //       <Route path="/terms-and-conditions" element={<TASPage />} />
+  //     </Route>
+  //   )
+  // )
   
-  return <RouterProvider router={router} />
+  // return <RouterProvider router={router} />
+  return (
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="shop" element={<ShopPage />} />
+          <Route path="shop/:id" element={<ProductPage />} loader={productLoader} />
+          <Route path="add-product" element={<AddProductPage />} />
+          <Route path="cart" element={<CartPage />} />
+          <Route path="about" element={<AboutPage />} />
+          <Route path="contact" element={<ContactPage />} />
+          <Route path="auth" element={<AuthPage />} />
+          <Route path="terms-and-conditions" element={<TASPage />} />
+        </Route>
+      </Routes>
+    </HashRouter>
+  )
 }
 
 export default App
