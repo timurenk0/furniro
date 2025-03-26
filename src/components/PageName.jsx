@@ -1,6 +1,7 @@
 import PropTypes from "prop-types"
 import rectanglebg from "../assets/rectangle-bg.jpg"
 import logo from "../assets/logo.png"
+import { Link } from "react-router-dom"
 
 const PageName = ({ pageName }) => {
 
@@ -14,7 +15,7 @@ const PageName = ({ pageName }) => {
             <div className="container position-absolute top-50 start-50 translate-middle text-center">
                 <img src={logo} alt="" />
                 <h1>{ pageName }</h1>
-                <p className="fw-semibold">Home {">"} <span className="fw-normal">{currentPage}</span> <span className="fw-normal">{sessionStorage.getItem("category") ? " > "+sessionStorage.getItem("category") : ""}</span></p>
+                <p className="fw-semibold">Home {">"} <Link className={`text-black fw-normal ${sessionStorage.getItem("category") ? "" : "text-decoration-none"}`} to="/shop" onClick={() => sessionStorage.clear()}>{currentPage}</Link> <span className="fw-normal">{sessionStorage.getItem("category") ? " > "+sessionStorage.getItem("category") : ""}</span></p>
             </div>
         </section>
   )

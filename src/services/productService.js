@@ -19,7 +19,6 @@ export const fetchProducts = async (type, limit) => {
     }
 };
 
-
 export const addProduct = async (product) => {
     try {
         const response = await axios.post(API_URL, product, {
@@ -30,5 +29,14 @@ export const addProduct = async (product) => {
         return response.data;
     } catch (error) {
         console.error("Error adding product:", error.response?.data || error.message);
+    }
+};
+
+export const deleteProduct = async (id) => {
+    try {
+        const response = await axios.delete(API_URL + "/" + id);
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting product:", error.response?.data || error.message);
     }
 }

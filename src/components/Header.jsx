@@ -2,20 +2,34 @@ import logo from "../assets/logo.png"
 import { NavLink } from "react-router-dom"
 import { IoCartOutline } from "react-icons/io5"
 import { FaUser } from "react-icons/fa";
+import { MdLogout } from "react-icons/md";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
-const Header = ({ isLogin=false }) => {
+import { useAuth } from "../services/AuthContext";
+import { logout } from "../services/userService";
+
+const Header = () => {
+
+  const { userRole, isLoggedIn } = useAuth();
+
   
   const navigate = useNavigate();
+  
   
   const handleRedirect = () => {
     sessionStorage.removeItem("category");
     navigate("/shop");
   }
-  
+
+  const handleLogout = () => {
+    logout();
+    window.location.href = "/";
+  }
+
     return (
     <Navbar expand="md" className="bg-body-tertiary">
       <Container>
@@ -30,7 +44,17 @@ const Header = ({ isLogin=false }) => {
             <NavLink className="header-link" to="/about">About</NavLink>
             <NavLink className="header-link" to="/contact">Contact</NavLink>
             <NavLink className="header-link" to="/cart"><IoCartOutline size={24} /></NavLink>
-            <NavLink className="header-link" to="/auth">{isLogin ? "logged" : <FaUser />}</NavLink>
+            <NavLink className="header-link" to="/auth">{isLoggedIn ? 
+            <div onClick={() => handleLogout()}>
+              <p className="d-inline me-1">{userRole}</p>
+              <MdLogout />
+            </div> 
+            : 
+            <>
+              <p className="d-inline me-1 text-decoration-underline">guest</p>
+              <FaUser />
+            </>}
+            </NavLink>
           </Nav>
         </Navbar.Collapse>
       </Container>
@@ -38,6 +62,10 @@ const Header = ({ isLogin=false }) => {
         
 
     )
+}
+
+Header.propTypes = {
+  isLoggedIn: PropTypes.bool
 }
 
 export default Header

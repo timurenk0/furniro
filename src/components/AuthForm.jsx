@@ -29,47 +29,43 @@ const AuthForm = ({ isLogin, setIsLogin }) => {
 
         const loadUsers = async () => {
             const data = await fetchUsers();
+            console.log(data);
             setUsers(data);
         }
 
-        
         const handleSubmit = async (e) => {
             e.preventDefault();
 
             if (!isLogin) {
                 if (password !== repeatPassword) {
                     setError("Passwords must match!");
-                    return ;
+                    return;
                 }
     
                 if (!agreed) {
                     setError("You must agree with 'Terms of service'");
-                    return ;
+                    return;
                 }
             }
-
 
             setError("");
      
             try {
-                
                 if (isLogin) {
                     try {
-                        await loginUser({ username, password });
+                        // eslint-disable-next-line no-unused-vars
+                        const result = await loginUser({ username, password });
                         toast.success("Successfully logged in!");
-
-                        navigate("/");
+                        navigate("/shop", { state: { userLoggedIn: true }});
+                        window.location.reload();
                     } catch (error) {
-                        setError(error.respone?.data?.error || "Invalid username or password");
+                        setError(error.response?.data?.error || "Invalid username or password");
                         console.error("Login error:", error);
                     }
-                    
                 } else {
-                    const result = await addUser({ username, password });
-
-                    if (result && result.error === "User already exists") {
-                        setError("User with this username already exists!");
-                    } else {
+                    try {
+                        const newUser = await addUser({ username, password });
+                        console.log(newUser);
                         toast.success("Account created successfully!");
                         loadUsers();
                         setUsername("");
@@ -77,19 +73,28 @@ const AuthForm = ({ isLogin, setIsLogin }) => {
                         setRepeatPassword("");
                         setAgreed(false);
                         setIsLogin(true);
+                    } catch (error) {
+                        const errorMsg = error.response?.data?.error || '';
+                        
+                        if (errorMsg.includes("Username already exists") || 
+                            errorMsg.includes("duplicate key") || 
+                            errorMsg.includes("E11000")) {
+                            setError("This username is already taken! Please choose another one");
+                        } else {
+                            setError(errorMsg || error.message || "Failed to create account");
+                        }
+                        console.error("Registration error:", error);
                     }
                 }
-                
             } catch (error) {
                 console.error("Authentication error:", error);
                 toast.error(error.message || "An error occurred during authentication. Please try again later");
             }
-            
         }   
     
+    // Rest of the component remains the same
     return (
             <section className="vh-100 bg-image">
-
                 <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss pauseOnHover theme="light" />
                 
                 <div className="mask d-flex align-items-center h-100 gradient-custom-3">
@@ -108,25 +113,19 @@ const AuthForm = ({ isLogin, setIsLogin }) => {
                                 </div>
 
                                 <div data-mdb-input-init className="form-outline mb-4">
-                                <label className="form-label" htmlFor="form3Example4cg">Password</label>
-                                <input type={showPassword ? "text" : "password"} id="form3Example4cg" className=" position-relative form-control form-control-lg mb-5" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                                <button
-                                    type="button"
-                                    onClick={togglePasswordVisibility}
-                                    className="btn btn-link position-absolute me-4 pe-3 translate-middle-y mt-3 mt-md-3 pt-md-4 mt-lg-4 pb-lg-3 me-lg-4 mt-xl-4 pt-xl-4"
-                                    style={{
-                                        background: "transparent",
-                                        border: "none",
-                                        cursor: "pointer",
-                                        fontSize: "18px",
-                                        top: "38%",
-                                        right: "5%"
-                                    }}
-                                >
-                                    {showPassword ? <FaEyeSlash className="text-gold" /> : <FaEye className="text-gold" />}
-                                </button>
+                                    <label className="form-label" htmlFor="form3Example4cg">Password</label>
+                                    <div className="position-relative">
+                                        <input type={showPassword ? "text" : "password"} id="form3Example4cg" className="form-control form-control-lg mb-5" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                                        <button
+                                            type="button"
+                                            onClick={togglePasswordVisibility}
+                                            className="show-password-button"
+                                        >
+                                            {showPassword ? <FaEyeSlash className="text-gold" /> : <FaEye className="text-gold" />}
+                                        </button>
+                                        
+                                    </div>
                                 </div>
-
                                 {/* Login page */}
                                 {isLogin ? "" : (
                                 <>
@@ -135,7 +134,7 @@ const AuthForm = ({ isLogin, setIsLogin }) => {
                                 <input type={showPassword ? "text" : "password"} id="form3Example4cdg" className="form-control form-control-lg mb-5" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
                                 </div>
                                 <div className="form-check d-flex justify-content-center mb-5">
-                                <input className="form-check-input me-2" type="checkbox" value="" id="form2Example3cg" onChange={() => setAgreed(!agreed)} />
+                                <input className="form-check-input me-2" type="checkbox" value="" id="form2Example3cg" checked={agreed} onChange={() => setAgreed(!agreed)} />
                                 <label className="form-check-label" htmlFor="form2Example3g">
                                     I agree all statements in <a href="/terms-and-conditions" target="_blank" className="text-body"><u>Terms of service</u></a>
                                 </label>
@@ -146,7 +145,7 @@ const AuthForm = ({ isLogin, setIsLogin }) => {
                                 {error && <div className="alert alert-danger">{error}</div>}
 
                                 <div className="d-flex justify-content-center">
-                                <button  type="submit" data-mdb-button-init
+                                <button type="submit" data-mdb-button-init
                                     data-mdb-ripple-init className="btn btn-block btn-lg" style={{backgroundColor: "var(--gold-color)", color: "white"}}>{isLogin ? "Login" : "Register"}</button>
                                 </div>
 

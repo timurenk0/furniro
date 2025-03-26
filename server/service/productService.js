@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-undef
+/* eslint-disable no-undef */
 const Product = require("../models/Product");
 const mongoose = require("mongoose");
 
@@ -45,6 +45,18 @@ class ProductService {
             return savedProduct;
         } catch (error) {
             throw new Error(`Error adding product: ${error.message}`);
+        }
+    }
+
+    static async deleteProduct(id) {
+        try {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                throw new Error("Invalid product ID format.");
+            }
+
+            return await Product.findByIdAndDelete(id);
+        } catch (error) {
+            throw new Error(`Error deleting product from DB: ${error.message}`)
         }
     }
 }

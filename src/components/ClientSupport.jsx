@@ -24,7 +24,7 @@ const ClientSupport = () => {
                 <GrGift className="custom-icons" />
                 <div className="ps-3 client-support">
                     <h4>Free Shipping</h4>
-                    <h5>Order over $150</h5>
+                    <h5>Order over $350</h5>
                 </div>
             </div>
             <div className="col d-flex py-4 py-md-0">

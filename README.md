@@ -6,7 +6,7 @@
 
 1. Work on responsiveness:
 
-   - Good for now
+   - ProductPage > "Only admins can..." text on md-screen size
 
 2. Work on ShopPage:
 
@@ -18,14 +18,14 @@
 
 4. Work on ProductPage:
 
-   - "Remove product" feature
+   - Good for now
 
 5. Work on CartPage:
 
-   - Add ability to change the item counter
+   - Good for now
 
-6. Work on LoginPage:
+6. Work on PaymentPage:
 
-   - Implement login logic
+   - Good for now
 
 # Would be nice

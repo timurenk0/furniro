@@ -4,27 +4,41 @@ import { useLoaderData } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useAuth } from "../services/AuthContext";
+import PropTypes from "prop-types";
 
-const ProductPage = () => {
+import { addToCart } from "../services/cartService";
+
+
+const ProductPage = ({ deleteProductSubmit }) => {
+
+  const { userRole, isLoggedIn } = useAuth();
+  
   const product = useLoaderData();
   const [count, setCount] = useState(1);
   const [mainImage, setMainImage] = useState(product.imageURLs.main);
 
   const navigate = useNavigate();
+
   const handleRedirect = (category) => {
     sessionStorage.setItem("category", category);
     navigate("/shop");
   }
 
+  const deleteProduct = async () => {
 
-  const addToCart = (product) => {
-    if (!localStorage.getItem(product._id)) {
-      localStorage.setItem(product._id, JSON.stringify({ image: product.imageURLs.main, name: product.name, price: product.price, quantity: count }));
-      return ;
+    deleteProductSubmit(product._id);
+    return navigate("/", { state: { productDeleted: true, productName: product.name } });
+    
+  }
+
+  const addItemToCart = async (product, quantity) => {
+
+    try {
+      return await addToCart(product._id, quantity);
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
     }
-    const data = JSON.parse(localStorage.getItem(product._id));
-    data.quantity += count;
-    localStorage.setItem(product._id, JSON.stringify(data));
 
   }
 
@@ -69,13 +83,39 @@ const ProductPage = () => {
               onClick={() => setCount(prev => prev + 1)}
             >+</button>
           </div>
-          <button className="add-to-cart" onClick={() => addToCart(product)}>Add to Cart</button>
+          {isLoggedIn ? <button className="add-to-cart" onClick={() => addItemToCart(product, count)}>Add to Cart</button> : <p className="d-md-inline text-center mt-3 m-md-0 border border-black p-2 ">Log in to add products to cart</p>}          
+          {userRole === "admin" ? (
+            <>
+              <button type="button" className="btn btn-outline-danger border-2 mt-3 mt-md-0 ms-md-5" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Delete Product</button>
+              <div className="modal fade" id="staticBackdrop" tabIndex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div className="modal-dialog modal-dialog-centered">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title text-danger fw-bold">Warning</h5>
+                      <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div className="modal-body">
+                      <p>Are you sure you want to delete this product? This action will <span className="fw-bold">permanently</span> delete the product from our database.</p>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn" data-bs-dismiss="modal">Go back</button>
+                      <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={() => deleteProduct()}>Yes, delete this product</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+        ): ("")}
         </div>
       </div>
 
       <RelatedProducts tag={product.type} />
     </section>
   )
+}
+
+ProductPage.propTypes = {
+  deleteProductSubmit: PropTypes.func.isRequired,
 }
 
 const productLoader = async ({ params }) => {

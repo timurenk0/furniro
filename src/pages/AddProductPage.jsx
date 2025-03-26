@@ -46,18 +46,18 @@ const AddProductPage = ({ addProductSubmit }) => {
   }
   
   const submitForm = (e) => {
-    e.preventDefault();
+    e.preventDefault();   
     
     const newProduct = {
       name: productName,
       type: productType,
       description: productDescription,
-      price: String(productPrice),
+      price: productPrice,
       imageURLs: {
-        main: mainImageURL,
-        secondary1: secondary1ImageURL,
-        secondary2: secondary2ImageURL,
-        secondary3: secondary3ImageURL,
+        main: mainImageURL || null,
+        secondary1: secondary1ImageURL || null,
+        secondary2: secondary2ImageURL || null,
+        secondary3: secondary3ImageURL || null,
       }
     }
 

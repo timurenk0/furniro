@@ -66,6 +66,13 @@ html, body {
     background-color: var(--gold-color);
 }
 
+.show-password-button {
+    position: absolute;
+    border: none;
+    background-color: transparent;
+    top: 0.75rem;
+    right: 0.5rem;
+}
 
 .type-link {
     text-decoration: none;
@@ -162,18 +169,9 @@ html, body {
     text-decoration: none;
 }
 
-.header-link:active {
-    /* background-color: var(--gold-color); */
-    background-color: red;
-    color: white;
-    padding: stretch 0.5rem;
-}
-
 .header-link:hover {
     background-color: var(--light-gold-color);
 }
-
-/* bg-black text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2 */
 
 
 .product-info h2 {

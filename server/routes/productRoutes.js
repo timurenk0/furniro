@@ -2,6 +2,7 @@
 const express = require("express");
 const ProductService = require("../service/productService");
 const router = express.Router();
+const { authService, authorize } = require("../service/authService");
 
 router.get("/products", async (req, res) => {
     try {
@@ -26,7 +27,7 @@ router.get("/products/:id", async (req, res) => {
     }
 })
 
-router.post("/products", async (req, res) => {
+router.post("/products", authService, authorize("admin"), async (req, res) => {
     try {
         const productData = req.body;
         const newProduct = await ProductService.addProduct(productData);
@@ -35,6 +36,21 @@ router.post("/products", async (req, res) => {
             message: "Product added successfully",
             product: newProduct
         })
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
+router.delete("/products/:id", authService, authorize("admin"), async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const deletedProduct = await ProductService.deleteProduct(productId);
+
+        return res.status(200).json({
+            message: "Product deleted successgfully",
+            product: deletedProduct
+        })
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

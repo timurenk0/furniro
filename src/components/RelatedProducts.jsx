@@ -36,7 +36,7 @@ const RelatedProducts = ({tag}) => {
         <h3 className="text-center mb-5 text-dark-grey fw-semibold">Related Products</h3>
         <div className="row">
             {products.map((product, key) => (
-                <div className="col-3" key={key}>
+                <div className="py-2 py-md-0 col-12 col-md-3" key={key}>
                     <ProductCard key={product._id} product={product} isRelated={true} />
                 </div>
             ))}
